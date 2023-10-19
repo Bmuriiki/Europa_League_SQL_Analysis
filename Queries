@@ -1,0 +1,167 @@
+SELECT * 
+FROM `teak-runner-391307.european_league.european_league` 
+
+--Unique rounds played
+
+SELECT ROUND, COUNT(ROUND) AS Number_of_appearances
+FROM `teak-runner-391307.european_league.european_league`
+GROUP BY ROUND
+ORDER BY ROUND ASC;
+
+--Total home games played by each team
+SELECT Team, count(team) total_home_games
+FROM `teak-runner-391307.european_league.european_league` 
+group by Team
+
+--Data Cleaning On Round Column for consistency
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'round-16', 'ROUND 16')
+WHERE Round = 'round-16'
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'EIGHTH ROUND', 'ROUND 8')
+WHERE Round = 'EIGHTH ROUND'
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'FIFTH ROUND', 'ROUND 5')
+WHERE Round = 'FIFTH ROUND'
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'SECOND ROUND', 'ROUND 2')
+WHERE Round = 'SECOND ROUND'
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'SEVENTH ROUND', 'ROUND 7')
+WHERE Round = 'SEVENTH ROUND'
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'fifth-round', 'ROUND 5')
+WHERE Round = 'fifth-round'
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'final', 'FINAL')
+WHERE Round = 'FINAL'
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'first-round', 'ROUND 1')
+WHERE Round = 'first-round'
+
+UPDATE  `teak-runner-391307.european_league.european_league` 
+SET Round = REPLACE(Round, 'third-round', 'ROUND 3')
+WHERE Round = 'third-round'
+
+
+
+UPDATE `teak-runner-391307.european_league.european_league` 
+SET Round= Replace(Round, 'fourth-round', 'ROUND 4')
+WHERE Round= 'fourth-round'
+
+UPDATE `teak-runner-391307.european_league.european_league` 
+SET Round= Replace(Round, 'second-round', 'ROUND 2')
+WHERE Round= 'second-round'
+
+UPDATE `teak-runner-391307.european_league.european_league` 
+SET Round= Replace(Round, 'round-64', 'ROUND 64')
+WHERE Round= 'round-64'
+
+UPDATE `teak-runner-391307.european_league.european_league` 
+SET Round= Replace(Round, 'group-stage', 'GROUP STAGE')
+WHERE Round= 'group-stage'
+
+UPDATE `teak-runner-391307.european_league.european_league` 
+SET Round= Replace(Round, 'group-stage', 'GROUP STAGE')
+WHERE Round= 'group-stage'
+
+UPDATE `teak-runner-391307.european_league.european_league` 
+SET Round= Replace(Round, 'quarter-finals', 'QUARTER FINALS')
+WHERE Round= 'quarter-finals'
+
+UPDATE `teak-runner-391307.european_league.european_league` 
+SET Round= Replace(Round, 'second-group-stage', 'SECOND GROUP STAGE')
+WHERE Round= 'second-group-stage'
+
+--Checking whether there is a connection between round 128 and round 12
+
+SELECT * 
+FROM `teak-runner-391307.european_league.european_league` 
+WHERE Round= 'ROUND 128' OR Round='ROUND 12'
+
+--Home games played by each team
+
+SELECT distinct(team), count(team) as Number_of_home_games
+FROM `teak-runner-391307.european_league.european_league` 
+GROUP BY Team
+
+--total scores by each team in their home games
+--Results is that Barcelona has scored more goal(2594 goals) in away matches having played 1115 matches
+
+SELECT distinct(team), count(team) as Number_of_home_games, sum(team_score) as total_scores_home_games
+FROM `teak-runner-391307.european_league.european_league` 
+WHERE team_score is not null
+GROUP BY Team
+ORDER BY total_scores_home_games DESC
+
+SELECT distinct(Opponent), count(Opponent) as Number_of_Away_games
+FROM `teak-runner-391307.european_league.european_league` 
+GROUP BY Opponent
+ORDER BY Number_of_Away_games DESC
+
+--total scores by each team in their away games
+-- Results is that Barcelona has scored more goal(2594 goals) in away matches having played 1141 matches
+-- Top 3 teams in terms of goals scored during away matches are Barcelona, Real Madrid and Bayern Munich
+
+SELECT distinct(Opponent), count(Opponent) as Number_of_Away_games, SUM(Opponent_Score) as total_away_score
+FROM `teak-runner-391307.european_league.european_league` 
+WHERE Opponent_Score IS NOT NULL
+GROUP BY Opponent
+ORDER BY total_away_score DESC
+
+--Summary for number of home games, away games and their respective total score per team
+
+SELECT
+  Team,
+  COUNT(Team) AS Number_of_home_games,
+  SUM(team_score) AS total_scores_home_games,
+  Opponent,
+  COUNT(Opponent) AS Number_of_Away_games,
+  SUM(Opponent_Score) AS total_away_score
+FROM `teak-runner-391307.european_league.european_league`
+WHERE team_score IS NOT NULL
+GROUP BY Team, Opponent
+ORDER BY total_scores_home_games DESC, total_away_score
+
+--Total home points by each team in fa_cup in year 2002
+--Arsenal won fa cup in year 2002
+
+SELECT DISTINCT(Team), count(Team) as number_of_fa_cup_home_games, sum(Team_Points) as Total_fa_cup_points
+FROM `teak-runner-391307.european_league.european_league` 
+Where competition= 'fa-cup' AND season= 2002
+GROUP BY Team
+ORDER BY Total_fa_cup_home_points DESC
+
+--Confirming the number of games played by Arsenal during fa-cup in 2002 season
+
+SELECT *
+FROM `teak-runner-391307.european_league.european_league` 
+Where competition= 'fa-cup' AND season= 2002 
+order by team 
+
+
+SELECT distinct(Competition),distinct(season)
+FROM `teak-runner-391307.european_league.european_league` 
+group by season
+
+SELECT MAX(Competition) AS Competition, season
+FROM `teak-runner-391307.european_league.european_league`
+GROUP BY season
+
+--Summary of teams participated in Europa League finals and teams that won
+
+SELECT Season,Team, Opponent, Team_Points, Opponent_Points,
+FROM `teak-runner-391307.european_league.european_league` 
+WHERE Competition='uefa-europa-league' AND Round='FINAL' 
+order by season desc
+
+
+
